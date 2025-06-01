@@ -1,0 +1,31 @@
+package com.chagas.gestaoespaco.dao;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+public final class AuditoriaDAO {
+	public void registrarAcao(int idUsuario, String acao) {
+	    if (acao == null || acao.trim().isEmpty()) {
+	        System.err.println("Ação não pode ser nula ou vazia.");
+	        return;
+	    }
+
+	    String sql = "INSERT INTO auditoria_usuarios (id_usuario, acao, data_acao) VALUES (?, ?, NOW())";
+
+	    try (Connection conn = Conexao.getConnection();
+	         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+	        stmt.setInt(1, idUsuario);
+	        stmt.setString(2, acao);
+	        stmt.executeUpdate();
+
+	        System.out.println("Ação registrada na auditoria para usuário ID " + idUsuario + ": " + acao);
+
+	    } catch (SQLException e) {
+	        System.err.println("Erro ao registrar ação na auditoria para usuário ID " + idUsuario);
+	        e.printStackTrace();
+	    }
+	}
+
+}
